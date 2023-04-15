@@ -43,11 +43,11 @@ Running
 
 Requires
 ==
-cmake
-make
-C compiler that supports C11 (gcc for example)
-SDL2 and development headers
-SDL2-image and development headers
+- cmake
+- make
+- C compiler that supports C11 (gcc for example)
+- SDL2 and development headers
+- SDL2-image and development headers
 
 License
 ==
