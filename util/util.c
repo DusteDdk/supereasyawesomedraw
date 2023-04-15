@@ -1,5 +1,7 @@
 #include "util.h"
 #include <stdio.h>
+#include <fcntl.h>
+#include <errno.h>
 
 int min(int a, int b) {
     return a>b?b:a;
@@ -55,7 +57,7 @@ void init(int argc, char **argv) {
         printf("Window create err: %s\n", SDL_GetError());
     }
 
-    mainRenderer = SDL_CreateRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    mainRenderer = SDL_CreateRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     if(mainRenderer == NULL) {
         printf("Renderer create err: %s\n", SDL_GetError());
     }
@@ -64,7 +66,7 @@ void init(int argc, char **argv) {
 
 void toggleFullscreen() {
     settings.fullscreen = !settings.fullscreen;
-    int flag = settings.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP | 0;
+    int flag = settings.fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
     SDL_SetWindowFullscreen(mainWindow, flag);
 }
 
@@ -117,6 +119,12 @@ void brushNextCol() {
     brSt.colIdx++;
     if(brSt.colIdx==numCols) {
         brSt.colIdx=0;
+    }
+}
+void brushPrevCol() {
+    brSt.colIdx--;
+    if(brSt.colIdx < 0) {
+        brSt.colIdx=numCols-1;
     }
 }
 
@@ -190,4 +198,38 @@ void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex) {
     brSt.lx = brSt.x;
     brSt.ly = brSt.y;
 
+}
+
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+    Uint32 rmask = 0xff000000;
+    Uint32 gmask = 0x00ff0000;
+    Uint32 bmask = 0x0000ff00;
+    Uint32 amask = 0x000000ff;
+#else
+    Uint32 rmask = 0x000000ff;
+    Uint32 gmask = 0x0000ff00;
+    Uint32 bmask = 0x00ff0000;
+    Uint32 amask = 0xff000000;
+#endif
+
+void save(SDL_Texture* tex) {
+    char fileName[17];
+
+    FILE *fd;
+
+    for(int i=0; i < 1000; i++) {
+        sprintf(fileName, "drawing_%03d.bmp", i);
+        fd = fopen(fileName, "r");
+        if( !fd ) {
+            SDL_SetRenderTarget(mainRenderer, tex);
+            SDL_Surface* surf = SDL_CreateRGBSurface(0, settings.width, settings.height, 32, rmask, gmask, bmask, amask);
+            SDL_RenderReadPixels(mainRenderer, NULL,SDL_PIXELFORMAT_ABGR8888, surf->pixels, surf->pitch );
+            SDL_SaveBMP(surf, fileName);
+            SDL_SetRenderTarget(mainRenderer, NULL);
+            printf("Saved %s\n", fileName);
+            return;
+        }
+    }
+    printf("You saved too many drawings! Clean up and try again.\n");
 }

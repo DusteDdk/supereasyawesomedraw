@@ -20,11 +20,6 @@ int main(int argc, char** argv) {
     uint_fast8_t run = 1;
 
     SDL_GL_SetSwapInterval(1);
-    int hasVsync = SDL_GL_GetSwapInterval() == 0;
-
-    if(!hasVsync) {
-        printf("Error setting vsync.\n");
-    }
 
     SDL_Texture* curTex = IMG_LoadTexture(ren, "cur.png");
     SDL_Rect curRect = {
@@ -41,7 +36,19 @@ int main(int argc, char** argv) {
     SDL_Texture *texTarget = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888,
 		SDL_TEXTUREACCESS_TARGET, getSettings()->width, getSettings()->height);
 
-    printf("\nSuper Easy Awesome Draw!\n---\nClear screen : Escape or Backspace\nChange color : Spacebar\nQuit program: LeftShift + Escape\nToggle using mouse button to draw : LeftShift + Enter\n");
+    printf("\nSuper Easy Awesome Draw!\n"
+        "---\n"
+        "Clear screen : Backspace\n"
+        "Change color : Spacebar or mouse-wheel\n"
+        "Quit program: Ctrl + q\n"
+        "Toggle using mouse button to draw : Ctrl + Enter\n"
+        "Fullscreen : Ctrl + f\n"
+        "Save picture ( ./drawing_N.tga ) : Ctrl + s\n");
+
+    SDL_SetRenderDrawColor(ren,0,0,0,255);
+    SDL_SetRenderTarget(ren, texTarget);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_SetRenderTarget(ren, NULL);
 
     while(run) {
 
@@ -53,29 +60,32 @@ int main(int argc, char** argv) {
         while(SDL_PollEvent(&event)) {
             switch(event.type) {
                 case SDL_KEYDOWN:
-                    if(event.key.keysym.sym == SDLK_BACKSPACE || event.key.keysym.sym == SDLK_ESCAPE) {
-
-                        if(event.key.keysym.sym == SDLK_ESCAPE && SDL_GetModState() & KMOD_LSHIFT) {
-                            return 0;
-                        }
-                        
+                    if(event.key.keysym.sym == SDLK_SPACE) {
+                        brushNextCol();
+                    }
+                    if(event.key.keysym.sym == SDLK_BACKSPACE ) {
                         SDL_SetRenderDrawColor(ren,0,0,0,255);
                         SDL_SetRenderTarget(ren, texTarget);
                         SDL_RenderFillRect(ren, NULL);
                         SDL_SetRenderTarget(ren, NULL);
                     }
-                    if(event.key.keysym.sym == SDLK_SPACE) {
-                        brushNextCol();
-                    }
-                    if(event.key.keysym.sym == SDLK_RETURN) {
-                        if( SDL_GetModState() & KMOD_LSHIFT ) {
-                            brushToggleUseButton();
+                    if(SDL_GetModState() & KMOD_LCTRL) {
+                        switch(event.key.keysym.sym) {
+                            case SDLK_q:
+                                printf("Bye!\n");
+                                return 0;
+                                break;
+                            case SDLK_RETURN:
+                                brushToggleUseButton();
+                                break;
+                            case SDLK_f:
+                                toggleFullscreen();
+                                break;
+                            case SDLK_s:
+                                save(texTarget);
+                                break;
                         }
-                        if( SDL_GetModState() & KMOD_LALT) {
-                            toggleFullscreen();
-                        }
                     }
-                    
                 break;
                 case SDL_WINDOWEVENT:
                     if( event.window.event == SDL_WINDOWEVENT_RESIZED ) {
@@ -96,6 +106,14 @@ int main(int argc, char** argv) {
                 break;
                 case SDL_MOUSEMOTION:
                     brushMove( event.motion.x, event.motion.y);
+                break;
+                case SDL_MOUSEWHEEL:
+                    if(event.wheel.y > 0) {
+                        brushPrevCol();
+                    }
+                    if(event.wheel.y < 0) {
+                        brushNextCol();
+                    }
                 break;
 
             }

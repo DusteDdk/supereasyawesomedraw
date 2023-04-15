@@ -1,6 +1,6 @@
-add_executable(main main.c)
+add_executable(../draw main.c)
 
-target_link_libraries(main LINK_PUBLIC
+target_link_libraries(../draw LINK_PUBLIC
     m
     Util
     SDL2
