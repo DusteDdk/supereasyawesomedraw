@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         "Quit program: Ctrl + q\n"
         "Toggle using mouse button to draw : Ctrl + Enter\n"
         "Fullscreen : Ctrl + f\n"
-        "Save picture ( ./drawing_N.tga ) : Ctrl + s\n");
+        "Save picture ( ./drawing_N.bmp ) : Ctrl + s\n");
 
     SDL_SetRenderDrawColor(ren,0,0,0,255);
     SDL_SetRenderTarget(ren, texTarget);
