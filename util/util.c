@@ -221,6 +221,7 @@ void save(SDL_Texture* tex) {
             SDL_Surface* surf = SDL_CreateRGBSurface(0, settings.width, settings.height, 32, rmask, gmask, bmask, amask);
             SDL_RenderReadPixels(mainRenderer, NULL,SDL_PIXELFORMAT_ABGR8888, surf->pixels, surf->pitch );
             SDL_SaveBMP(surf, fileName);
+            SDL_FreeSurface(surf);
             SDL_SetRenderTarget(mainRenderer, NULL);
             printf("Saved %s\n", fileName);
             return;
