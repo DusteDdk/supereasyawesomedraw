@@ -3,13 +3,6 @@
 #include <fcntl.h>
 #include <errno.h>
 
-int min(int a, int b) {
-    return a>b?b:a;
-}
-int max(int a, int b) {
-    return a>b?a:b;
-}
-
 SDL_Renderer *mainRenderer;
 SDL_Window *mainWindow;
 
@@ -152,7 +145,7 @@ void brushToggleUseButton() {
     brSt.useButton = !brSt.useButton;
 }
 
-void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex) {
+void brushDraw(SDL_Texture *tex, SDL_Texture *curTex) {
 
 
     SDL_SetTextureColorMod(curTex, cols[brSt.colIdx].red,cols[brSt.colIdx].green,cols[brSt.colIdx].blue);
@@ -165,12 +158,12 @@ void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex) {
             .h = 16
         };
 
-        SDL_SetRenderTarget(ren, tex);
-        SDL_SetRenderDrawColor(ren, cols[brSt.colIdx].red,cols[brSt.colIdx].green,cols[brSt.colIdx].blue,255);
+        SDL_SetRenderTarget(mainRenderer, tex);
+        SDL_SetRenderDrawColor(mainRenderer, cols[brSt.colIdx].red,cols[brSt.colIdx].green,cols[brSt.colIdx].blue,255);
 
 
           if(brSt.lx == brSt.x && brSt.ly == brSt.y) {
-                SDL_RenderFillRect(ren, &test );
+                SDL_RenderFillRect(mainRenderer, &test );
             } else {
                 float x1 = brSt.lx;
                 float x2 = brSt.x;
@@ -188,11 +181,11 @@ void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex) {
                 for(int s = 0; s < len; s++) {
                     test.x = (x1 + s*nx);
                     test.y = (y1 + s*ny);
-                    SDL_RenderFillRect(ren, &test );
+                    SDL_RenderFillRect(mainRenderer, &test );
                 }
 
          }
-        SDL_SetRenderTarget(ren, NULL);
+        SDL_SetRenderTarget(mainRenderer, NULL);
     }
 
     brSt.lx = brSt.x;

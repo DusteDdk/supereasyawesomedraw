@@ -23,7 +23,7 @@ Controls (kid)
 
 Controls (parent)
 ==
-- Ctrl + q - Quits
+- Ctrl + w - Quits
 - Ctrl + s - Saves the drawing (in the current directory)
 - Ctrl + f - Toggle fullscreen (borderless)
 - Ctrl + Enter - Toggle between "always draw" and "press mouse button to draw"

@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
         "---\n"
         "Clear screen : Backspace\n"
         "Change color : Spacebar or mouse-wheel\n"
-        "Quit program: Ctrl + q\n"
+        "Quit program: Ctrl + w\n"
         "Toggle using mouse button to draw : Ctrl + Enter\n"
         "Fullscreen : Ctrl + f\n"
         "Save picture ( ./drawing_N.bmp ) : Ctrl + s\n");
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
                     }
                     if(SDL_GetModState() & KMOD_LCTRL) {
                         switch(event.key.keysym.sym) {
-                            case SDLK_q:
+                            case SDLK_w:
                                 printf("Bye!\n");
                                 return 0;
                                 break;
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
         uint32_t mbtn = SDL_GetMouseState( &(curRect.x), &(curRect.y));
         
 
-        brushDraw(ren, texTarget, curTex);
+        brushDraw(texTarget, curTex);
 
         SDL_RenderCopy(ren, texTarget, NULL, NULL);
         SDL_RenderCopy(ren, curTex, NULL, &curRect);

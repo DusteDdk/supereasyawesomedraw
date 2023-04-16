@@ -20,7 +20,7 @@ void brushInit();
 void brushDown();
 void brushUp();
 void brushMove(int x, int y);
-void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex);
+void brushDraw(SDL_Texture *tex, SDL_Texture *curTex);
 void brushNextCol();
 void brushPrevCol();
 void brushToggleUseButton();
