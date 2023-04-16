@@ -182,8 +182,8 @@ void brushDraw(SDL_Renderer *ren, SDL_Texture *tex, SDL_Texture *curTex) {
 
                 float len = sqrt (a*a+b*b );
 
-                float nx = (brSt.x-brSt.lx)/len;
-                float ny = (brSt.y-brSt.ly)/len;
+                float nx = a/len;
+                float ny = b/len;
    
                 for(int s = 0; s < len; s++) {
                     test.x = (x1 + s*nx);
@@ -221,7 +221,9 @@ void save(SDL_Texture* tex) {
     for(int i=0; i < 1000; i++) {
         sprintf(fileName, "drawing_%03d.bmp", i);
         fd = fopen(fileName, "r");
-        if( !fd ) {
+        if( fd ) {
+            fclose(fd);
+        } else {
             SDL_SetRenderTarget(mainRenderer, tex);
             SDL_Surface* surf = SDL_CreateRGBSurface(0, settings.width, settings.height, 32, rmask, gmask, bmask, amask);
             SDL_RenderReadPixels(mainRenderer, NULL,SDL_PIXELFORMAT_ABGR8888, surf->pixels, surf->pitch );
